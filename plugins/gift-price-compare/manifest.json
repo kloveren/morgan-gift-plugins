@@ -1,0 +1,20 @@
+{
+  "id": "gift-price-compare",
+  "name": "gift-price-compare",
+  "version": "1.1.0",
+  "description": "Cross-marketplace gift price comparison. On-chain: MarketApp (marketapp.ws), GetGems, Fragment. Off-chain: Portals, Tonnel, MRKT. Giftstat = data aggregator, NOT a marketplace.",
+  "author": "Kloveren (t.me/morganlegacy)",
+  "license": "MIT",
+  "entry": "index.js",
+  "teleton": ">=0.3.0",
+  "tools": [
+    {
+      "name": "gift_price_compare",
+      "description": "Compare gift prices across real marketplaces: Portals, Tonnel, Fragment, GetGems, MarketApp. Giftstat is a data aggregator (not a marketplace) that provides floors from off-chain markets."
+    }
+  ],
+  "permissions": [],
+  "tags": ["gifts", "marketplace", "arbitrage", "price-comparison", "trading"],
+  "repository": "https://github.com/kloveren/morgan-gift-plugins",
+  "funding": null
+}

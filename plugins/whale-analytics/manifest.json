@@ -1,0 +1,37 @@
+{
+  "id": "whale-analytics",
+  "name": "whale-analytics",
+  "version": "1.2.0",
+  "description": "Whale activity tracking, anomaly detection, and auto-daily snapshots for Telegram gift markets. Multi-source: GetGems + MarketApp sales + Giftstat price history + SQLite delta tracking.",
+  "author": "Kloveren (t.me/morganlegacy)",
+  "license": "MIT",
+  "entry": "index.js",
+  "teleton": ">=0.3.0",
+  "tools": [
+    {
+      "name": "whale_tracker",
+      "description": "Track top gift holders (whales) — portfolios, buy/sell volumes, accumulation patterns, strategy classification. Multi-source: GetGems + MarketApp (optional). Auto-daily snapshots via scheduler."
+    },
+    {
+      "name": "anomaly_detector",
+      "description": "Detect price and volume anomalies in gift markets — heuristic wash trading detection, price pump/dump, volume spikes. Statistical z-score analysis with configurable sensitivity."
+    },
+    {
+      "name": "whale_snapshots",
+      "description": "Query stored whale snapshots + compute deltas between dates. Modes: latest (most recent), history (wallet timeline), compare (delta between two dates — who accumulated, who dumped, new entrants)."
+    }
+  ],
+  "permissions": [
+    "bridge"
+  ],
+  "tags": [
+    "whales",
+    "analytics",
+    "anomaly",
+    "tracking",
+    "market-intelligence",
+    "snapshots"
+  ],
+  "repository": "https://github.com/kloveren/morgan-gift-plugins",
+  "funding": null
+}

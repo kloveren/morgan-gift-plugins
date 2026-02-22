@@ -1,0 +1,29 @@
+{
+  "id": "giftstat",
+  "name": "giftstat",
+  "version": "2.0.0",
+  "description": "Telegram gift market analytics from giftstat.app — collections, floor prices, models, stats, history. v2 API: floor index with Bollinger bands, per-collection daily floors with marketplace breakdown",
+  "author": "Kloveren (t.me/morganlegacy)",
+  "license": "MIT",
+  "entry": "index.js",
+  "teleton": ">=0.3.0",
+  "tools": [
+    { "name": "gift_collections", "description": "List all Telegram gift collections with supply and pricing data" },
+    { "name": "gift_floor_prices", "description": "Get current floor prices by marketplace" },
+    { "name": "gift_models", "description": "List gift model variants and rarities" },
+    { "name": "gift_model_stats", "description": "Get statistics per gift model" },
+    { "name": "gift_model_floor", "description": "Get floor price per gift model" },
+    { "name": "gift_backdrops", "description": "List gift background variants" },
+    { "name": "gift_symbols", "description": "List gift symbol/pattern variants" },
+    { "name": "gift_thematics", "description": "List thematic gift collections" },
+    { "name": "gift_thematic_lines", "description": "List gift lines grouped by thematic category" },
+    { "name": "gift_ton_rate", "description": "Get current TON/USDT exchange rate" },
+    { "name": "gift_price_history", "description": "Get historical floor price data" },
+    { "name": "gift_index_floor_history", "description": "Gift Market Floor Index time series with bands (v2 API)" },
+    { "name": "gift_collection_floor_history", "description": "Per-collection floor history with marketplace breakdown (v2 API)" }
+  ],
+  "permissions": [],
+  "tags": ["market-data", "ton", "gifts", "trading", "api"],
+  "repository": "https://github.com/kloveren/morgan-gift-plugins",
+  "funding": null
+}

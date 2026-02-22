@@ -1,0 +1,25 @@
+{
+  "id": "marketapp",
+  "name": "marketapp",
+  "version": "1.1.0",
+  "description": "MarketApp.ws gift marketplace — browse, buy, sell, and manage NFT gifts on MarketApp",
+  "author": "Kloveren (t.me/morganlegacy)",
+  "license": "MIT",
+  "entry": "index.js",
+  "teleton": ">=0.3.0",
+  "tools": [
+    { "name": "marketapp_collections", "description": "List gift collections on MarketApp with floor price, volume, and listing stats" },
+    { "name": "marketapp_gifts_onsale", "description": "Get gifts currently on sale on MarketApp, filterable by collection, model, symbol, backdrop, price range" },
+    { "name": "marketapp_gift_history", "description": "Get recent gift sales history on MarketApp" },
+    { "name": "marketapp_nft_info", "description": "Get detailed NFT info by on-chain address from MarketApp" },
+    { "name": "marketapp_collection_attributes", "description": "Get attribute breakdown (models, backdrops, symbols) for a gift collection on MarketApp" },
+    { "name": "marketapp_buy_nft", "description": "Buy an NFT listed for sale on MarketApp (on-chain transaction)" },
+    { "name": "marketapp_list_nft", "description": "List an NFT for sale on MarketApp at a specified TON price" },
+    { "name": "marketapp_change_price", "description": "Change the sale price of an NFT already listed on MarketApp" },
+    { "name": "marketapp_cancel_sale", "description": "Cancel the sale of an NFT on MarketApp, removing it from the marketplace" }
+  ],
+  "permissions": [],
+  "tags": ["marketplace", "gifts", "ton", "trading", "nft"],
+  "repository": "https://github.com/kloveren/morgan-gift-plugins",
+  "funding": null
+}

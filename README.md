@@ -1,0 +1,183 @@
+# Morgan Gift Plugins
+
+Custom [Teleton](https://github.com/TONresistor/teleton-agent) plugins for the **Telegram Gifts market on TON**. These plugins power [@morgan_agent](https://t.me/morgan_agent) — a Telegram-native AI agent that provides real-time analytics, cross-marketplace trading, and whale intelligence for the TON Gift NFT ecosystem.
+
+## Overview
+
+The Telegram Gift market has grown into a multi-million dollar NFT economy on TON, with gifts trading across 6+ marketplaces (GetGems, MarketApp, Fragment, Portals, Tonnel, MRKT). These plugins give Teleton agents the tools to analyze, visualize, and trade in this market — directly from Telegram.
+
+**Total: 7,400+ lines of production code, 25+ tools, 6 marketplace integrations.**
+
+## Plugins
+
+### `whale-analytics`
+**Whale tracking, anomaly detection & snapshot engine**
+
+Tracks the biggest holders across gift collections, detects suspicious market activity (wash trading, pump & dump), and maintains daily snapshots for delta analysis.
+
+- `whale_tracker` — Portfolio analysis of top holders: accumulation patterns, buy/sell volumes, strategy classification (Diamond Hands / Flipper / Accumulator)
+- `anomaly_detector` — Statistical z-score analysis for price pumps, volume spikes, and heuristic wash-trade detection
+- `whale_snapshots` — Historical snapshot storage with delta comparison: who accumulated, who dumped, new entrants
+
+Multi-source data: GetGems API + MarketApp API + Giftstat price history. SQLite-backed for persistence.
+
+---
+
+### `chart`
+**Professional chart generation engine**
+
+Renders publication-quality charts directly in Telegram chats using QuickChart.io and sharp image composition.
+
+- `market_chart` — TON/jetton price charts (line, candlestick)
+- `gift_floor_chart` — Floor price charts for gift collections with trend lines
+- `gift_top_movers` — Horizontal bar charts: top gainers & losers by price change
+- `chart_pie` — Market dominance, portfolio distribution, volume breakdowns
+- `chart_bar` — Daily volumes, category comparisons, grouped/stacked bars
+- `chart_dashboard` — Multi-chart compositor: combine any charts into a single dashboard image
+- `chart_generate` — Universal chart tool: feed raw data arrays, get any chart type
+
+Dark theme, auto-sizing, markdown captions, direct-to-chat delivery.
+
+---
+
+### `giftstat`
+**Telegram Gift market analytics via Giftstat API**
+
+The primary data source for gift collection information. Wraps both Giftstat API v1 and v2.
+
+- `gift_collections` — All collections with supply, pricing, mint data, and metadata
+- `gift_collection_floor` — Floor prices with marketplace breakdown (Portals, Tonnel, GetGems, Fragment)
+- `gift_models` / `gift_model_floor` — Model-level data (rarity tiers within collections)
+- `gift_floor_index` — Market-wide floor index with **Bollinger Bands** for technical analysis
+- `gift_price_history` — Historical floor prices per collection, hourly or daily
+- `gift_backdrops` / `gift_symbols` / `gift_thematics` — NFT attribute data
+- `gift_ton_rate` — Current TON/USD exchange rate
+
+No API key required. Public data aggregation from all major marketplaces.
+
+---
+
+### `gift-price-compare`
+**Cross-marketplace arbitrage scanner**
+
+Queries 6 marketplaces simultaneously and finds price discrepancies for the same gift collection.
+
+- `gift_price_compare` — Side-by-side floor price comparison across:
+  - **On-chain:** GetGems, MarketApp, Fragment
+  - **Off-chain:** Portals, Tonnel, MRKT
+  - **Data aggregator:** Giftstat (floor consolidation)
+- Calculates spread percentage and flags arbitrage opportunities
+- Model-level breakdown when available
+- Smart collection name resolution with alias mapping
+
+---
+
+### `marketapp`
+**MarketApp.ws marketplace integration**
+
+Full trading capabilities on MarketApp — browse, buy, sell, and manage NFT gifts.
+
+- `marketapp_collections` — Browse collections with floor price, volume, listing stats
+- `marketapp_gifts_onsale` — Filter gifts on sale by collection, model, symbol, backdrop, price range
+- `marketapp_gift_history` — Recent sales history
+- `marketapp_nft_info` — Detailed NFT info by on-chain address
+- `marketapp_collection_attributes` — Attribute breakdown (models, backdrops, symbols)
+- `marketapp_buy_nft` — Execute buy transactions (on-chain, signed from agent wallet)
+- `marketapp_list_nft` — List NFTs for sale at a specified TON price
+- `marketapp_change_price` / `marketapp_cancel_sale` — Manage active listings
+
+Requires `MARKETAPP_API_TOKEN`. Trading tools sign transactions from the agent's TON wallet.
+
+---
+
+### `getgems`
+**GetGems marketplace integration**
+
+Full-featured integration with GetGems — the largest NFT marketplace on TON.
+
+- `getgems_collection_info` — Collection stats (floor, volume, holders, items)
+- `getgems_collection_items` / `getgems_items_onsale` — Browse and filter NFTs
+- `getgems_nft_info` — Detailed NFT metadata and sale status
+- `getgems_nft_history` — Transaction history for specific NFTs
+- `getgems_owner_nfts` — All NFTs owned by a wallet address
+- `getgems_user_trading` — User trading statistics (bought/sold, volume, P&L)
+- `getgems_gift_collections` — Telegram Gift collections listing
+- `getgems_buy_nft` — Buy NFTs listed for sale (on-chain transaction)
+- `getgems_list_nft` — List NFTs for fixed-price sale
+- `getgems_cancel_sale` — Cancel active listings
+
+GraphQL-based. Requires `GETGEMS_API_KEY` for extended access.
+
+---
+
+## Installation
+
+1. Clone or copy the desired plugin folders into your Teleton agent's `plugins/` directory:
+
+```bash
+git clone https://github.com/kloveren/morgan-gift-plugins.git
+cp -r morgan-gift-plugins/plugins/giftstat ~/.teleton/plugins/
+cp -r morgan-gift-plugins/plugins/chart ~/.teleton/plugins/
+# ... copy whichever plugins you need
+```
+
+2. Set required environment variables:
+
+```bash
+# For MarketApp trading
+export MARKETAPP_API_TOKEN="your_token_here"
+
+# For GetGems extended access
+export GETGEMS_API_KEY="your_key_here"
+```
+
+3. Restart your Teleton agent. Plugins are auto-discovered from the `plugins/` directory.
+
+> **Note:** `giftstat`, `chart`, and `gift-price-compare` work without any API keys — they use public APIs.
+
+## Architecture
+
+Each plugin follows the Teleton plugin standard:
+
+```
+plugin-name/
+├── index.js        # Plugin entry point, exports tools array
+├── manifest.json   # Metadata: name, version, tools, permissions, tags
+└── README.md       # Documentation (optional)
+```
+
+Plugins export a `tools` function that receives the SDK context and returns an array of tool definitions. Each tool has:
+- `name` — unique identifier
+- `description` — used by the AI agent to decide when to invoke the tool
+- `parameters` — JSON Schema for input validation
+- `execute(params, context)` — async handler that returns `{ success, data }` or `{ success, error }`
+
+## Live Demo
+
+Try these plugins in action: [@morgan_agent](https://t.me/morgan_agent)
+
+Example commands:
+- "Show me the top gift collections by floor price"
+- "Compare Plush Pepe prices across marketplaces"
+- "Track whales in the Candy Cane collection"
+- "Generate a market dominance chart"
+- "Find arbitrage opportunities in gifts"
+
+## Tech Stack
+
+- **Runtime:** Node.js (ESM)
+- **Blockchain:** TON (The Open Network)
+- **APIs:** Giftstat, GetGems GraphQL, MarketApp REST, Fragment, QuickChart.io
+- **On-chain:** @ton/core, @ton/ton, @ton/crypto for transaction signing
+- **Visualization:** QuickChart.io + sharp for image composition
+
+## License
+
+MIT — see [LICENSE](./LICENSE)
+
+## Links
+
+- [Teleton Agent Framework](https://github.com/TONresistor/teleton-agent)
+- [Teleton Plugins Directory](https://github.com/TONresistor/teleton-plugins)
+- [Giftstat API](https://api.giftstat.app)
+- [Morgan Agent (Live)](https://t.me/morgan_agent)

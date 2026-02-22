@@ -1,0 +1,52 @@
+{
+  "id": "chart",
+  "name": "chart",
+  "version": "3.0.0",
+  "description": "Professional chart generation (line, bar, pie, horizontal bar, dashboards) via QuickChart.io + sharp compositor. Includes universal chart_generate for arbitrary data.",
+  "author": "Kloveren (t.me/morganlegacy)",
+  "license": "MIT",
+  "entry": "index.js",
+  "teleton": ">=0.3.0",
+  "tools": [
+    {
+      "name": "market_chart",
+      "description": "Generate and send a price chart image for TON/jettons to the current chat"
+    },
+    {
+      "name": "gift_floor_chart",
+      "description": "Generate and send a gift collection floor price chart image using Giftstat data"
+    },
+    {
+      "name": "gift_top_movers",
+      "description": "Generate a horizontal bar chart showing TOP gift collections by price change (gainers and losers)"
+    },
+    {
+      "name": "chart_pie",
+      "description": "Generate a pie/doughnut chart — volume breakdowns, portfolio distribution, market share"
+    },
+    {
+      "name": "chart_bar",
+      "description": "Generate a vertical bar chart — daily volumes, comparisons, category breakdowns, grouped/stacked"
+    },
+    {
+      "name": "chart_dashboard",
+      "description": "Compose multiple chart images into a single dashboard image (dark theme, grid layout). Use with return_url_only from other chart tools."
+    },
+    {
+      "name": "chart_generate",
+      "description": "Universal chart generator — create any chart from raw data arrays (line, multi_line, bar, horizontal_bar, pie, doughnut). Supports annotations, custom colors, stacked bars. For whale analytics, anomaly reports, and custom visualizations."
+    }
+  ],
+  "permissions": [
+    "bridge"
+  ],
+  "tags": [
+    "charts",
+    "market",
+    "analytics",
+    "visualization",
+    "dashboard"
+  ],
+  "repository": "https://github.com/kloveren/morgan-gift-plugins",
+  "funding": null
+}
