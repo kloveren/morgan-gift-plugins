@@ -1,0 +1,46 @@
+{
+  "id": "invoices",
+  "name": "invoices",
+  "version": "1.2.0",
+  "description": "Create TON invoices with wallet verification, cached event indexer, and secure payment confirmation",
+  "author": "teleton (https://github.com/TONresistor)",
+  "license": "MIT",
+  "entry": "index.js",
+  "teleton": ">=0.3.0",
+  "tools": [
+    {
+      "name": "inv_begin_verification",
+      "description": "Start wallet ownership verification for an agent"
+    },
+    {
+      "name": "inv_confirm_verification",
+      "description": "Confirm wallet ownership by on-chain proof"
+    },
+    {
+      "name": "inv_register_agent",
+      "description": "Alias for inv_begin_verification"
+    },
+    {
+      "name": "inv_create",
+      "description": "Create a TON invoice and payment links"
+    },
+    {
+      "name": "inv_check",
+      "description": "Verify invoice payment on-chain via cached indexer"
+    },
+    {
+      "name": "inv_receipt",
+      "description": "Generate a receipt for a paid invoice"
+    }
+  ],
+  "permissions": [],
+  "tags": [
+    "payments",
+    "ton",
+    "invoices",
+    "receipts",
+    "security"
+  ],
+  "repository": "https://github.com/TONresistor/teleton-plugins",
+  "funding": null
+}
