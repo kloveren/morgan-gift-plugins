@@ -54,7 +54,7 @@ function resolveCollectionByAlias(nameOrSlug) {
 
 export const manifest = {
   name: "whale-analytics",
-  version: "1.3.0",
+  version: "1.4.0",
   sdkVersion: ">=1.0.0",
   description: "Whale tracking + anomaly detection + daily snapshots for gift markets",
   defaultConfig: {
@@ -104,36 +104,38 @@ async function giftstatFetch(path, params = {}) {
   return res.json();
 }
 
-async function getgemsCollectionHistory(address, types, limit, after, logger) {
-  const rawAddr = await toRawAddress(address);
+async function getgemsGiftHistory(types, limit, after, logger) {
+  const apiKey = process.env.GETGEMS_API_KEY;
+  if (!apiKey) {
+    return { items: [], _blocked: true, _authError: true };
+  }
   const params = new URLSearchParams();
   params.set("limit", String(limit || 100));
   if (after) params.set("after", after);
   if (types && types.length) {
     types.forEach((t) => params.append("types[]", t));
   }
-  const url = `https://api.getgems.io/public-api/v1/collection/history/${rawAddr}?${params}`;
-  const headers = { Accept: "application/json" };
-  const apiKey = process.env.GETGEMS_API_KEY;
-  if (apiKey) headers.Authorization = apiKey;
+  const url = `https://api.getgems.io/public-api/v1/nfts/history/gifts?${params}`;
+  const headers = { Accept: "application/json", Authorization: apiKey };
   const res = await fetchWithTimeout(url, { headers });
   if (res.status === 403) {
     return { items: [], _blocked: true };
   }
   if (res.status === 401) {
-    if (logger) logger(`GetGems 401: Authorization required but key ${apiKey ? "present" : "missing"}`);
+    if (logger) logger(`GetGems 401: Authorization required but key present=${!!apiKey}`);
     return { items: [], _blocked: true, _authError: true };
   }
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     throw new Error(`GetGems ${res.status}: ${body.slice(0, 200)}`);
   }
-  const data = await res.json();
-  if (data.items && data.items.length === 0 && !after && logger) {
-    const keys = Object.keys(data).join(",");
-    logger(`GetGems diagnostic: ${rawAddr.slice(0, 16)}... response keys=[${keys}], items=0, cursor=${data.cursor || "none"}`);
+  const raw = await res.json();
+  const data = raw.response !== undefined ? raw.response : raw;
+  const items = data.items || (Array.isArray(data) ? data : []);
+  if (logger && !after) {
+    logger(`GetGems gifts/history: ${items.length} items, cursor=${data.cursor || "none"}`);
   }
-  return data;
+  return { items, cursor: data.cursor || null };
 }
 
 function fromNano(nano) {
@@ -180,23 +182,31 @@ async function getFloorPrices() {
 
 async function getCollectionSales(address, maxItems = 300, logger = null) {
   try {
+    const rawAddr = await toRawAddress(address);
     const allItems = [];
     let cursor = undefined;
     const batchSize = 100;
     let blocked = false;
-    while (allItems.length < maxItems) {
-      const data = await getgemsCollectionHistory(address, ["sold"], batchSize, cursor, logger);
+    let totalFetched = 0;
+    const maxPages = 5;
+    let pages = 0;
+    while (allItems.length < maxItems && pages < maxPages) {
+      pages++;
+      const data = await getgemsGiftHistory(["sold"], batchSize, cursor, pages === 1 ? logger : null);
       if (data._blocked) {
-        if (logger) logger(`GetGems: ${address.slice(0, 12)}... blocked (${data._authError ? "401 auth" : "403"}), skipping`);
+        if (logger) logger(`GetGems: blocked (${data._authError ? "401 auth" : "403"}), skipping`);
         blocked = true;
         break;
       }
       const items = data.items || [];
-      if (logger && allItems.length === 0) {
-        logger(`GetGems: ${address.slice(0, 12)}... returned ${items.length} items`);
-      }
+      totalFetched += items.length;
       if (items.length === 0) break;
       for (const item of items) {
+        const itemCollAddr = item.collectionAddress || item.collection?.address || null;
+        if (!itemCollAddr) continue;
+        let itemRaw;
+        try { itemRaw = await toRawAddress(itemCollAddr); } catch { continue; }
+        if (itemRaw !== rawAddr) continue;
         allItems.push({
           nft_name: item.name || null,
           nft_address: item.address,
@@ -211,11 +221,14 @@ async function getCollectionSales(address, maxItems = 300, logger = null) {
       cursor = data.cursor;
       if (!cursor || items.length < batchSize) break;
     }
+    if (logger) {
+      logger(`GetGems: ${address.slice(0, 12)}... fetched ${totalFetched} total events, ${allItems.length} matched collection (${pages} pages)`);
+    }
     const result = allItems.slice(0, maxItems);
     result._blocked = blocked;
     return result;
   } catch (err) {
-    if (logger) logger(`GetGems sales error for ${address.slice(0, 12)}...: ${err.message}`);
+    if (logger) logger(`GetGems sales error: ${err.message}`);
     const result = [];
     result._blocked = false;
     return result;
@@ -1260,31 +1273,34 @@ async function testDataSources(log) {
   const results = { getgems: "unknown", marketapp: "unknown", giftstat: "unknown" };
 
   try {
-    const testAddr = await toRawAddress("EQBG-g6ahkAUGWpefWbx-D_9sQ8oWbvy6puuq78U2c4NUDFS");
-    const headers = { Accept: "application/json" };
     const gemsKey = process.env.GETGEMS_API_KEY;
-    if (gemsKey) headers.Authorization = gemsKey;
-    const params = new URLSearchParams();
-    params.set("limit", "5");
-    params.append("types[]", "sold");
-    const res = await fetch(
-      `https://api.getgems.io/public-api/v1/collection/history/${testAddr}?${params}`,
-      { headers, signal: AbortSignal.timeout(10000) }
-    );
-    if (res.ok) {
-      const data = await res.json();
-      const items = data.items || [];
-      if (items.length > 0) {
-        results.getgems = "ok";
-      } else {
-        const keys = Object.keys(data).join(",");
-        log(`GetGems health: HTTP 200 but 0 items (keys: ${keys}). API may have changed for gift collections.`);
-        results.getgems = "empty_data";
-      }
+    if (!gemsKey) {
+      results.getgems = "no_api_key";
+      log(`GetGems health: no API key configured`);
     } else {
-      const body = await res.text().catch(() => "");
-      log(`GetGems health check ${res.status}: ${body.substring(0, 300)}`);
-      results.getgems = `error_${res.status}`;
+      const params = new URLSearchParams();
+      params.set("limit", "5");
+      params.append("types[]", "sold");
+      const res = await fetch(
+        `https://api.getgems.io/public-api/v1/nfts/history/gifts?${params}`,
+        { headers: { Accept: "application/json", Authorization: gemsKey }, signal: AbortSignal.timeout(10000) }
+      );
+      if (res.ok) {
+        const raw = await res.json();
+        const data = raw.response !== undefined ? raw.response : raw;
+        const items = data.items || (Array.isArray(data) ? data : []);
+        if (items.length > 0) {
+          results.getgems = "ok";
+          log(`GetGems health: OK (${items.length} gift sale events)`);
+        } else {
+          log(`GetGems health: HTTP 200 but 0 items from nfts/history/gifts endpoint`);
+          results.getgems = "empty_data";
+        }
+      } else {
+        const body = await res.text().catch(() => "");
+        log(`GetGems health check ${res.status}: ${body.substring(0, 300)}`);
+        results.getgems = `error_${res.status}`;
+      }
     }
   } catch (err) {
     results.getgems = `error: ${err.message}`;
