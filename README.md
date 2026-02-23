@@ -6,7 +6,7 @@ Custom [Teleton](https://github.com/TONresistor/teleton-agent) plugins for the *
 
 The Telegram Gift market has grown into a multi-million dollar NFT economy on TON, with gifts trading across 6+ marketplaces (GetGems, MarketApp, Fragment, Portals, Tonnel, MRKT). These plugins give Teleton agents the tools to analyze, visualize, and trade in this market — directly from Telegram.
 
-**Total: 7,400+ lines of production code, 25+ tools, 6 marketplace integrations.**
+**Total: 10,200+ lines of production code, 50+ tools, 6 marketplace integrations.**
 
 ## Plugins
 
@@ -110,6 +110,73 @@ GraphQL-based. Requires `GETGEMS_API_KEY` for extended access.
 
 ---
 
+### `dyor`
+**TON token analytics from DYOR.io**
+
+Comprehensive token research: search, trust scores, pricing, holder data, DEX activity, and market pools.
+
+- `dyor_search` — Search TON jettons by name or symbol
+- `dyor_details` — Full jetton details by contract address
+- `dyor_trust_score` — DYOR.io trust score (0-100) with safety breakdown
+- `dyor_price` — Current price in TON, USD, and optional currency
+- `dyor_price_chart` — Price chart data points over time
+- `dyor_metrics` — Consolidated metrics (price, holders, liquidity, FDMC, mcap)
+- `dyor_stats` — Percent change statistics by time period
+- `dyor_holders` — Holder count and holder history ticks
+- `dyor_transactions` — Recent DEX transactions for a jetton
+- `dyor_markets` — DEX pool/market data for a jetton
+- `dyor_trending` — Trending TON jettons by chosen metric
+
+No API key required. 11 tools covering the full token research workflow.
+
+---
+
+### `geckoterminal`
+**TON DEX pool and token data from GeckoTerminal**
+
+Real-time DEX analytics: trending pools, new listings, OHLCV candles, trade history, and batch token prices.
+
+- `gecko_trending_pools` — Trending pools on TON by activity
+- `gecko_new_pools` — Newly created pools (last 48h)
+- `gecko_top_pools` — Top pools by liquidity and volume
+- `gecko_search_pools` — Search pools by token name, symbol, or address
+- `gecko_pool_info` — Detailed pool info (price, volume, liquidity, 24h changes)
+- `gecko_pool_trades` — Recent trades for a specific pool
+- `gecko_pool_ohlcv` — OHLCV candlestick data for charting
+- `gecko_token_info` — Full token data (price, volume, FDV, supply)
+- `gecko_token_pools` — All pools trading a specific token
+- `gecko_token_prices` — Batch price lookup for up to 30 tokens
+
+No API key required. 10 tools for DEX data and market movers.
+
+---
+
+### `invoices`
+**Secure TON payment invoices with on-chain verification**
+
+Complete payment infrastructure: wallet ownership verification, invoice generation with deep links, cached on-chain event indexing, and receipt generation.
+
+- `inv_begin_verification` — Create wallet ownership verification challenge
+- `inv_confirm_verification` — Confirm wallet ownership by on-chain proof
+- `inv_register_agent` — Alias for `inv_begin_verification`
+- `inv_create` — Create a TON invoice with deep links for Tonkeeper, Tonhub, and MyTonWallet
+- `inv_check` — Verify invoice payment on-chain via cached event indexer
+- `inv_receipt` — Generate a receipt for a paid invoice
+
+Cached event indexer reduces TonAPI calls. Used by the Stars broker and deal system for secure payment flows.
+
+---
+
+## Additional Features (Live on @morgan_agent)
+
+Beyond these open-source plugins, Morgan includes proprietary features:
+
+- **Stars Broker** — Buy Telegram Stars for TON via Split.tg API. Public invoice flow: any user pays TON, Morgan delivers Stars with 5% commission
+- **Deal System** — P2P gift trading with escrow, auto-verification, and Telegram Bot API companion bot
+- **Proactive Engagement** — Keyword-based responses in group chats for trading discussions
+
+---
+
 ## Installation
 
 1. Clone or copy the desired plugin folders into your Teleton agent's `plugins/` directory:
@@ -133,7 +200,7 @@ export GETGEMS_API_KEY="your_key_here"
 
 3. Restart your Teleton agent. Plugins are auto-discovered from the `plugins/` directory.
 
-> **Note:** `giftstat`, `chart`, and `gift-price-compare` work without any API keys — they use public APIs.
+> **Note:** `giftstat`, `chart`, `gift-price-compare`, `dyor`, `geckoterminal`, and `invoices` work without any API keys — they use public APIs.
 
 ## Architecture
 
@@ -162,12 +229,15 @@ Example commands:
 - "Track whales in the Candy Cane collection"
 - "Generate a market dominance chart"
 - "Find arbitrage opportunities in gifts"
+- "DYOR on STON token"
+- "Show trending DEX pools on TON"
+- "Create an invoice for 2 TON"
 
 ## Tech Stack
 
 - **Runtime:** Node.js (ESM)
 - **Blockchain:** TON (The Open Network)
-- **APIs:** Giftstat, GetGems GraphQL, MarketApp REST, Fragment, QuickChart.io
+- **APIs:** Giftstat, GetGems GraphQL, MarketApp REST, Fragment, DYOR.io, GeckoTerminal, QuickChart.io, TonAPI
 - **On-chain:** @ton/core, @ton/ton, @ton/crypto for transaction signing
 - **Visualization:** QuickChart.io + sharp for image composition
 
@@ -181,3 +251,4 @@ MIT — see [LICENSE](./LICENSE)
 - [Teleton Plugins Directory](https://github.com/TONresistor/teleton-plugins)
 - [Giftstat API](https://api.giftstat.app)
 - [Morgan Agent (Live)](https://t.me/morgan_agent)
+- [Morgan Legacy Channel](https://t.me/morganlegacy)
