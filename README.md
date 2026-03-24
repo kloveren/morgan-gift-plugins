@@ -8,6 +8,16 @@ The Telegram Gift market has grown into a multi-million dollar NFT economy on TO
 
 **Total: 10,200+ lines of production code, 50+ tools, 6 marketplace integrations.**
 
+## What's New (March 2026)
+
+- **geckoterminal** — new plugin: trending pools, OHLCV candles, batch token prices (10 tools)
+- **dyor** — new plugin: trust scores, holder analysis, DEX transactions, trending jettons (11 tools)
+- **invoices** — new plugin: TON payment invoices with on-chain verification and receipt generation (6 tools)
+- **gift-price-compare** — upgraded to 6 marketplaces (added Portals, Tonnel, MRKT)
+- **whale-analytics** — upgraded to multi-source (GetGems + MarketApp + Giftstat), daily SQLite snapshots with delta comparison
+- **chart** — added dashboard compositor (multi-chart in single image)
+- **Total: 9 plugins, 50+ tools** (was 6 plugins, ~30 tools in February)
+
 ## Plugins
 
 ### `whale-analytics`
@@ -244,6 +254,12 @@ Example commands:
 ## License
 
 MIT — see [LICENSE](./LICENSE)
+
+## Changelog
+
+**v1.1.0** (March 2026) — Added `geckoterminal`, `dyor`, `invoices` plugins. Upgraded `whale-analytics` to multi-source with SQLite delta snapshots. `gift-price-compare` now covers 6 marketplaces. `chart` gains dashboard compositor.
+
+**v1.0.0** (February 2026) — Initial release: `whale-analytics`, `chart`, `giftstat`, `gift-price-compare`, `marketapp`, `getgems`.
 
 ## Links
 
