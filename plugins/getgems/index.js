@@ -23,7 +23,7 @@ const { mnemonicToPrivateKey } = _require("@ton/crypto");
 
 export const manifest = {
   name: "getgems",
-  version: "1.0.0",
+  version: "1.3.0",
 };
 
 // ---------------------------------------------------------------------------

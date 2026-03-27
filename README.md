@@ -116,7 +116,7 @@ Full-featured integration with GetGems — the largest NFT marketplace on TON.
 - `getgems_list_nft` — List NFTs for fixed-price sale
 - `getgems_cancel_sale` — Cancel active listings
 
-GraphQL-based. Requires `GETGEMS_API_KEY` for extended access.
+REST public API-based. Requires `GETGEMS_API_KEY` for extended access.
 
 ---
 
