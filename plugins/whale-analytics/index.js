@@ -54,7 +54,7 @@ function resolveCollectionByAlias(nameOrSlug) {
 
 export const manifest = {
   name: "whale-analytics",
-  version: "1.4.0",
+  version: "1.2.0",
   sdkVersion: ">=1.0.0",
   description: "Whale tracking + anomaly detection + daily snapshots for gift markets",
   defaultConfig: {

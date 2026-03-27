@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check JavaScript syntax
+        run: node --check plugins/*/index.js
+
+      - name: Validate manifest.json files
+        run: |
+          for f in plugins/*/manifest.json; do
+            python3 -m json.tool "$f" > /dev/null
+          done

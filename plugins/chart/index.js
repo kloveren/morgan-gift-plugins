@@ -14,7 +14,7 @@ const { CustomFile } = _require("telegram/client/uploads");
 
 export const manifest = {
   name: "chart",
-  version: "1.0.0",
+  version: "3.0.0",
 };
 
 const QUICKCHART_URL = "https://quickchart.io/chart";
